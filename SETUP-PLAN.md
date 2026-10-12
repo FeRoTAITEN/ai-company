@@ -34,9 +34,9 @@ Then type: `ابدأ`
 
 ## Phase 2 — Verify load (CEO)
 
-- [ ] `claude plugin list` shows `hq@ai-company` enabled.
-- [ ] `claude plugin details hq` lists 5 agents (coo, qa-director, security-officer, researcher, department-builder) and 9 skills.
-- [ ] `claude plugin validate C:\AI\departments` passes.
+- [x] `claude plugin list` shows `hq@ai-company` enabled.
+- [x] `claude plugin details hq` lists 5 agents (coo, qa-director, security-officer, researcher, department-builder) and 9 skills.
+- [x] `claude plugin validate C:\AI\departments` passes.
 
 Verify: paste the three outputs into `logs/setup-phase2.txt`.
 
@@ -52,16 +52,16 @@ Use the Write tool (not the terminal) for each:
 | outside workspace | `C:\Users\Public\guard-test.txt` | blocked, message "outside the allowed write roots" |
 | protected folder | `C:\AI\projects\_guardtest\original\x.txt` | blocked, message "protected 'original' folder" |
 
-- [ ] All three behave as expected. Delete `C:\AI\logs\guard-ok.txt` afterwards.
-- [ ] If the hook does not fire: check `powershell.exe` is on PATH and run
+- [~] Script: all cases behave as expected (logs/setup-phase3.txt). Live hook: pending `/reload-plugins` in a new session. Delete `C:\AI\logs\guard-ok.txt` afterwards.
+- [x] If the hook does not fire: check `powershell.exe` is on PATH and run
       `powershell -NoProfile -ExecutionPolicy Bypass -File <plugin root>\scripts\guard-path.ps1` manually with a JSON sample.
 
 ---
 
 ## Phase 4 — Git & GitHub (CEO)
 
-- [ ] `git -C C:\AI status` is clean.
-- [ ] If `gh auth status` succeeds:
+- [x] `git -C C:\AI status` is clean.
+- [ ] (blocked REQ-1: gh installed, not logged in) If `gh auth status` succeeds:
   ```powershell
   gh repo create ferotaiten/ai-company --private --source C:\AI --push
   ```
@@ -73,14 +73,14 @@ Verify: `git -C C:\AI remote -v` shows the repo; `git -C C:\AI log origin/HEAD -
 
 ## Phase 5 — Hermes integration (CEO, only if `hermes` exists)
 
-- [ ] Back up `%USERPROFILE%\.hermes\config.yaml` (`hq:backup-before-change`).
-- [ ] Add without removing existing keys:
+- [x] Back up `%USERPROFILE%\.hermes\config.yaml` (`hq:backup-before-change`).
+- [x] Add without removing existing keys:
   ```yaml
   skills:
     external_dirs:
       - C:/AI/departments/hq/skills
   ```
-- [ ] Never read or write `%USERPROFILE%\.hermes\.env`.
+- [x] Never read or write `%USERPROFILE%\.hermes\.env`.
 
 Verify: `hermes status` runs without error; in a Hermes session the hq skills appear in the skills list.
 
@@ -89,33 +89,33 @@ Verify: `hermes status` runs without error; in a Hermes session the hq skills ap
 ## Phase 6 — Self-improvement loop (CEO builds it inside the `hq` plugin)
 
 ### 6.1 Feedback capture
-- [ ] Create `departments/<dept>/knowledge/feedback.md` template (date | goal | owner score 1–5 | owner note | QA verdict).
-- [ ] Add rule to AGENTS.md: when the owner says the result is bad (any wording) or gives a score, append it to the department's `feedback.md` before doing anything else.
-- [ ] `qa-director`: on every `REJECTED`, append the rejection to the same file.
+- [x] Create `departments/<dept>/knowledge/feedback.md` template (date | goal | owner score 1–5 | owner note | QA verdict).
+- [x] Add rule to AGENTS.md: when the owner says the result is bad (any wording) or gives a score, append it to the department's `feedback.md` before doing anything else.
+- [x] `qa-director`: on every `REJECTED`, append the rejection to the same file.
 
 ### 6.2 No-output guard (SubagentStop hook)
-- [ ] Add `departments/hq/scripts/require-output.ps1` + a `SubagentStop` entry in `departments/hq/hooks/hooks.json`.
-- [ ] Logic: read stdin JSON; take `last_assistant_message`; if it contains no evidence (no file path, commit hash, command output block, or `Blocked:`/`REQ-` line) -> block with reason "Return evidence: changed files, commands run with output, or a filed REQ id".
-- [ ] Loop guard: counter file `logs/retry-<agent_id>.txt`; after 3 blocks allow the stop and write `ESCALATE` so the CEO reassigns the task.
-- [ ] Test with a dummy subagent that returns plain text: blocked 3 times, then escalates.
+- [x] Add `departments/hq/scripts/require-output.ps1` + a `SubagentStop` entry in `departments/hq/hooks/hooks.json`.
+- [x] Logic: read stdin JSON; take `last_assistant_message`; if it contains no evidence (no file path, commit hash, command output block, or `Blocked:`/`REQ-` line) -> block with reason "Return evidence: changed files, commands run with output, or a filed REQ id".
+- [x] Loop guard: counter file `logs/retry-<agent_id>.txt`; after 3 blocks allow the stop and write `ESCALATE` so the CEO reassigns the task.
+- [~] Test with a dummy subagent that returns plain text: blocked 3 times, then escalates. (Script tested with SubagentStop payloads: exits 2,2,2 then ESCALATE; live subagent test pending `/reload-plugins`.)
 
 ### 6.3 Improver agent
-- [ ] Add `departments/hq/agents/improver.md` (one-line description: "Use after each completed goal or any owner complaint to improve a department's agents and skills from feedback, QA rejections, and logs.").
-- [ ] Procedure in its body:
+- [x] Add `departments/hq/agents/improver.md` (one-line description: "Use after each completed goal or any owner complaint to improve a department's agents and skills from feedback, QA rejections, and logs.").
+- [x] Procedure in its body:
   1. Read `feedback.md`, recent `REVIEW.md` rejections, `logs/`.
   2. Find the root cause per failure (missing instruction, wrong tool, vague acceptance criteria).
   3. Edit only the affected agent/skill files of that department, on a git branch `improve/<dept>-<date>`.
   4. Run evals (6.4) on old vs new. Merge only if the new score is higher and no case regresses; otherwise discard the branch.
   5. Log the change and the scores in `departments/<dept>/knowledge/improvements.md`.
-- [ ] The improved department is never told it is being evaluated; graders live outside it (`evals/` in hq).
+- [x] The improved department is never told it is being evaluated; graders live outside it (`evals/` in hq).
 
 ### 6.4 Evals
-- [ ] For each department: `claude plugin eval init` against `C:\AI\departments\<dept>`; store suites under `C:\AI\evals\<dept>\`.
-- [ ] Every owner complaint or QA rejection becomes a new eval case (prompt + grader).
-- [ ] Baseline run recorded in `departments/<dept>/knowledge/improvements.md`.
+- [x] For each department: `claude plugin eval init` against `C:\AI\departments\<dept>`; store suites under `C:\AI\evals\<dept>\`.
+- [x] Every owner complaint or QA rejection becomes a new eval case (prompt + grader).
+- [x] Baseline run recorded in `departments/<dept>/knowledge/improvements.md`.
 
 ### 6.5 Trigger
-- [ ] Add to the `hq:plan-execute-review` skill, step 4 (Deliver): after the final report, delegate to `improver` for each department that worked on the goal.
+- [x] Add to the `hq:plan-execute-review` skill, step 4 (Deliver): after the final report, delegate to `improver` for each department that worked on the goal.
 
 Verify phase 6: give one deliberately bad rating on a demo goal (Phase 7) -> feedback logged -> improver branch created -> eval comparison logged -> merged or discarded with reason.
 
@@ -125,19 +125,19 @@ Verify phase 6: give one deliberately bad rating on a demo goal (Phase 7) -> fee
 
 Goal to run: "Create project Demo and produce a one-page status report of the company setup."
 
-- [ ] `projects/Demo` created from template, own git repo with init commit.
-- [ ] `PLAN.md` has steps with owners and acceptance criteria.
-- [ ] `qa-director` verdict written to `projects/Demo/REVIEW.md`.
-- [ ] Report delivered to `outbox/Demo/`.
-- [ ] Final message to the owner follows the report format in AGENTS.md.
+- [x] `projects/Demo` created from template, own git repo with init commit.
+- [x] `PLAN.md` has steps with owners and acceptance criteria.
+- [x] `qa-director` verdict written to `projects/Demo/REVIEW.md`.
+- [x] Report delivered to `outbox/Demo/`.
+- [x] Final message to the owner follows the report format in AGENTS.md.
 
 ---
 
 ## Phase 8 — Close (CEO)
 
-- [ ] Mark all ONBOARDING.md items `[x]`.
+- [~] Mark all ONBOARDING.md items `[x]`. (GitHub item blocked on REQ-1)
 - [ ] Commit and push.
-- [ ] Send the owner the final report (Done / Changed / Blocked / Next).
+- [x] Send the owner the final report (Done / Changed / Blocked / Next).
 
 ---
 
