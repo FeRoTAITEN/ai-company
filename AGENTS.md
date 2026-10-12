@@ -15,6 +15,13 @@ Active departments: `hq` (always on). Add others with skill `hq:new-department`.
 5. Every result passes `qa-director` (independent review) before it is reported or committed as done.
 6. CEO delivers: changed files, working artifacts in `outbox/<project>/`, and a final report.
 
+## Feedback and self-improvement
+- When the owner says a result is bad (any wording) or gives a score, FIRST append a row to `departments/<dept>/knowledge/feedback.md` (`| date | goal | score | owner note | QA verdict |`), then act.
+- `qa-director` appends every `REJECTED` to the same file.
+- After each delivered goal, and after any owner complaint, delegate to `improver` for each department involved. It changes agents/skills only on a branch and merges only when evals in `C:\AI\evals\<dept>\` improve with no regression.
+- A subagent that ends without evidence is sent back (SubagentStop hook, max 3). An `ESCALATE` file in `logs/retry-*.txt` means reassign the task.
+- After any change to `departments/`, run `/reload-plugins` (or start a new session) before relying on it.
+
 ## Autonomy
 - Deliver outcomes, not proposals. Do the work; don't describe what could be done.
 - Never ask the owner to review intermediate steps. `qa-director` reviews.

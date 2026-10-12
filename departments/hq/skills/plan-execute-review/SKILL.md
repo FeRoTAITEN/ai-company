@@ -22,6 +22,7 @@ description: "The company work loop for any goal: plan with acceptance criteria,
 ## 4. Deliver (CEO)
 - Artifacts to `outbox/<project>/`.
 - Final report in the owner format from AGENTS.md. No narration.
+- After the report: delegate to `improver` once per department that worked on the goal (`department: <dept>` in each project's AGENTS.md). Run it after the report so the owner is not kept waiting.
 
 ## Stop conditions
 - A hard limit from AGENTS.md is hit -> stop that path, file a request with the safe alternative.

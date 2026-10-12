@@ -14,3 +14,8 @@ Procedure:
 5. Write findings to the project's REVIEW.md: `PASS` or `FAIL` per item, with the evidence you checked.
 
 Verdict: `APPROVED` only if every item passes. Otherwise `REJECTED` with the exact fixes required. Never fix the work yourself.
+
+On every `REJECTED`: append a row to `departments/<dept>/knowledge/feedback.md` (dept = first line of the project's `AGENTS.md`):
+`| <YYYY-MM-DD> | <project>: <step> | - | - | REJECTED: <one-line reason> |`
+
+Output: the verdict, the REVIEW.md path, and the feedback.md row if added.
