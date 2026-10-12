@@ -52,7 +52,7 @@ Use the Write tool (not the terminal) for each:
 | outside workspace | `C:\Users\Public\guard-test.txt` | blocked, message "outside the allowed write roots" |
 | protected folder | `C:\AI\projects\_guardtest\original\x.txt` | blocked, message "protected 'original' folder" |
 
-- [~] Script: all cases behave as expected (logs/setup-phase3.txt). Live hook: pending `/reload-plugins` in a new session. Delete `C:\AI\logs\guard-ok.txt` afterwards.
+- [x] Script and live hook: all cases behave as expected (logs/setup-phase3.txt, live test 2026-10-12). guard-ok.txt deleted.
 - [x] If the hook does not fire: check `powershell.exe` is on PATH and run
       `powershell -NoProfile -ExecutionPolicy Bypass -File <plugin root>\scripts\guard-path.ps1` manually with a JSON sample.
 
@@ -61,7 +61,7 @@ Use the Write tool (not the terminal) for each:
 ## Phase 4 — Git & GitHub (CEO)
 
 - [x] `git -C C:\AI status` is clean.
-- [ ] (blocked REQ-1: gh installed, not logged in) If `gh auth status` succeeds:
+- [x] (REQ-1 done) Pushed to private https://github.com/FeRoTAITEN/ai-company. If `gh auth status` succeeds:
   ```powershell
   gh repo create ferotaiten/ai-company --private --source C:\AI --push
   ```
@@ -97,7 +97,7 @@ Verify: `hermes status` runs without error; in a Hermes session the hq skills ap
 - [x] Add `departments/hq/scripts/require-output.ps1` + a `SubagentStop` entry in `departments/hq/hooks/hooks.json`.
 - [x] Logic: read stdin JSON; take `last_assistant_message`; if it contains no evidence (no file path, commit hash, command output block, or `Blocked:`/`REQ-` line) -> block with reason "Return evidence: changed files, commands run with output, or a filed REQ id".
 - [x] Loop guard: counter file `logs/retry-<agent_id>.txt`; after 3 blocks allow the stop and write `ESCALATE` so the CEO reassigns the task.
-- [~] Test with a dummy subagent that returns plain text: blocked 3 times, then escalates. (Script tested with SubagentStop payloads: exits 2,2,2 then ESCALATE; live subagent test pending `/reload-plugins`.)
+- [x] Test with a dummy subagent that returns plain text: blocked 3 times, then escalates. (Script test exits 2,2,2 then ESCALATE; live subagent test passed 2026-10-12, see logs/setup-phase3.txt.)
 
 ### 6.3 Improver agent
 - [x] Add `departments/hq/agents/improver.md` (one-line description: "Use after each completed goal or any owner complaint to improve a department's agents and skills from feedback, QA rejections, and logs.").
@@ -135,8 +135,8 @@ Goal to run: "Create project Demo and produce a one-page status report of the co
 
 ## Phase 8 — Close (CEO)
 
-- [~] Mark all ONBOARDING.md items `[x]`. (GitHub item blocked on REQ-1)
-- [ ] Commit and push.
+- [x] Mark all ONBOARDING.md items `[x]`.
+- [x] Commit and push.
 - [x] Send the owner the final report (Done / Changed / Blocked / Next).
 
 ---
