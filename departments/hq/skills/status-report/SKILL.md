@@ -7,7 +7,7 @@ description: "Produce the owner-facing status of all projects and open requests.
 
 ## Procedure
 1. For each `projects/*/PLAN.md`: count steps by status, take the current step.
-2. List open items in `C:\AI\REQUESTS.md`.
+2. List open items in `C:\AI\REQUESTS.md`: only headers matching `^## REQ-\d+ \|.*\| open$` (the format example at the top uses `REQ-<number>` and must not be counted).
 3. Last commit per repo: `git -C <repo> log -1 --format="%h %s %cr"`.
 
 ## Output (Gulf Arabic, terse)
