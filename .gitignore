@@ -1,0 +1,29 @@
+# projects are separate git repos
+projects/*
+!projects/.gitkeep
+
+# owner drop zone / deliverables / runtime
+inbox/**/files/
+outbox/
+logs/
+backups/
+
+# secrets
+.env
+*.env
+*.key
+*.pem
+
+# large binaries
+*.zip
+*.7z
+*.iso
+*.bin
+
+# python / node
+__pycache__/
+.venv/
+node_modules/
+
+# local claude settings
+.claude/settings.local.json

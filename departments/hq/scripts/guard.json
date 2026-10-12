@@ -1,0 +1,12 @@
+{
+  "allowedWriteRoots": [
+    "C:\\AI",
+    "C:\\Tools",
+    "%USERPROFILE%\\.claude",
+    "%USERPROFILE%\\.hermes",
+    "%TEMP%"
+  ],
+  "protectedSegments": [
+    "original"
+  ]
+}

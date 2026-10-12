@@ -1,0 +1,14 @@
+{
+  "name": "ai-company",
+  "description": "Turki's local AI company departments",
+  "owner": {
+    "name": "Turki"
+  },
+  "plugins": [
+    {
+      "name": "hq",
+      "source": "./hq",
+      "description": "Headquarters: CEO operations, QA, security, research, project and department scaffolding"
+    }
+  ]
+}

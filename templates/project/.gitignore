@@ -1,0 +1,11 @@
+*.zip
+*.7z
+*.iso
+*.bin
+.env
+*.env
+*.key
+*.pem
+__pycache__/
+.venv/
+node_modules/

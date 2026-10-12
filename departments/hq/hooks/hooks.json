@@ -1,0 +1,18 @@
+{
+  "description": "Workspace guard: blocks file writes outside allowed roots and into original/ folders",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe",
+            "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${CLAUDE_PLUGIN_ROOT}/scripts/guard-path.ps1"],
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}
