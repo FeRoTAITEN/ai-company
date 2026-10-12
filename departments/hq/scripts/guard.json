@@ -1,9 +1,10 @@
 {
   "allowedWriteRoots": [
-    "C:\\AI",
-    "C:\\Tools",
-    "%USERPROFILE%\\.claude",
-    "%USERPROFILE%\\.hermes",
+    "C:/AI",
+    "C:/Tools",
+    "%USERPROFILE%/.claude",
+    "%USERPROFILE%/.hermes",
+    "%LOCALAPPDATA%/hermes",
     "%TEMP%"
   ],
   "protectedSegments": [

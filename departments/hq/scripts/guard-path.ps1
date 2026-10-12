@@ -1,9 +1,15 @@
 # PreToolUse guard for Write/Edit tools. Exit 2 = block (stderr goes to Claude). Exit 0 = allow.
 $ErrorActionPreference = 'Stop'
+# Any unexpected error blocks the write (exit 1 would let it through).
+trap { [Console]::Error.WriteLine("Blocked by workspace guard: internal error ($($_.Exception.Message))."); exit 2 }
 try {
     $raw = [Console]::In.ReadToEnd()
     $j = $raw | ConvertFrom-Json
-} catch { exit 0 }
+} catch {
+    # Fail closed: an unparseable payload must not bypass the guard.
+    [Console]::Error.WriteLine("Blocked by workspace guard: could not parse hook input or config ($($_.Exception.Message)).")
+    exit 2
+}
 
 $ti = $j.tool_input
 $p = $null
@@ -27,7 +33,10 @@ if (-not [IO.Path]::IsPathRooted($p)) {
 $full = Normalize $p
 
 $cfgPath = Join-Path $PSScriptRoot 'guard.json'
-$cfg = Get-Content $cfgPath -Raw | ConvertFrom-Json
+try { $cfg = Get-Content $cfgPath -Raw | ConvertFrom-Json } catch {
+    [Console]::Error.WriteLine("Blocked by workspace guard: guard.json is unreadable ($($_.Exception.Message)). Fix it before writing files.")
+    exit 2
+}
 
 foreach ($seg in $cfg.protectedSegments) {
     $needle = $sep + $seg + $sep
