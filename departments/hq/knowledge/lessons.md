@@ -14,3 +14,8 @@ Impact: Guard scripts must `trap` errors and exit 2 (fail closed).
 What: After `claude plugin install hq@ai-company` mid-session, a Write to C:\Users\Public was not blocked.
 Evidence: Write tool created C:\Users\Public\guard-test.txt (deleted afterwards).
 Impact: After installing/editing plugins, run `/reload-plugins` or start a new session before relying on hooks.
+
+### 2026-10-12 run-evals.ps1 from Git Bash picked GNU tar  [CONFIRMED]
+What: Launched from Git Bash, `tar` resolved to /usr/bin/tar, failed on "C:" paths, and the eval ran against an empty plugin.
+Evidence: logs/eval-hq-old-20261012-202953.json and eval-hq-new-20261012-203019.json (invalid runs, per improver report).
+Impact: run-evals.ps1 now calls %SystemRoot%\System32\tar.exe and throws on failure.

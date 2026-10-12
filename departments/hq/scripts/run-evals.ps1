@@ -28,7 +28,9 @@ if ($Ref -eq 'WORKTREE') {
     $tar = Join-Path $tmp 'src.tar'
     git -C $root archive --format=tar -o $tar "${Ref}:departments/$Dept"
     if ($LASTEXITCODE -ne 0) { throw "git archive failed for $Ref" }
-    tar -xf $tar -C $plugin
+    # Use Windows bsdtar explicitly; Git Bash's GNU tar on PATH misreads "C:" as a remote host.
+    & "$env:SystemRoot\System32\tar.exe" -xf $tar -C $plugin
+    if ($LASTEXITCODE -ne 0) { throw "tar extract failed for $Ref" }
     Remove-Item $tar
 }
 Copy-Item -Recurse -Force $suite (Join-Path $plugin 'evals')
